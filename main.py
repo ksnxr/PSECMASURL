@@ -1,7 +1,7 @@
 from env import Env
 from agent import Agent
 import numpy as np
-from settings import number_agents, number_iterations, log_interval, debug, debug_agent
+from settings import number_agents, number_iterations, log_interval
 import matplotlib.pyplot as plt
 import pickle
 import os
@@ -34,6 +34,9 @@ def get_partner_states(actions, index):
     l = [get_action_state(actions[ind]) for ind in range(number_agents) if ind != index]
     return np.concatenate(l)
 
+def run_agent(i, j, k, partner_states, env):
+    return reward1, reward2
+
 
 if __name__ == '__main__':
     # init
@@ -60,22 +63,10 @@ if __name__ == '__main__':
             for k in range(number_agents):
                 # partner selection
                 selected_partner = agents[k].select_partner(partner_states[k], i, j)
-                if debug and k == debug_agent:
-                    print(f'{k} selects {selected_partner}, with {get_action_state(env.last_actions[selected_partner])}')
-                elif debug and selected_partner == debug_agent:
-                    print(f'{k} selected by {k}, with {get_action_state(env.last_actions[k])}')
                 # game play
                 selected_action1 = agents[k].select_action(get_action_state(env.last_actions[selected_partner]))
-                if debug and k == debug_agent:
-                    print(f"{k} does {selected_action1} based on {get_action_state(env.last_actions[selected_partner])}")
                 selected_action2 = agents[selected_partner].select_action(get_action_state(env.last_actions[k]))
-                if debug and selected_partner == debug_agent:
-                    print(f"{selected_partner} does {selected_action2} based on {get_action_state(env.last_actions[k])}")
                 reward1, reward2 = env.compute_reward(k, selected_partner, selected_action1, selected_action2)
-                if debug and k == debug_agent:
-                    print(f'{selected_partner} does {env.last_actions[selected_partner]}, {k} receives {reward1}')
-                elif debug and selected_partner == debug_agent:
-                    print(f'{k} does {env.last_actions[k]}, {selected_partner} receives {reward2}')
                 agents[k].last_reward = reward1
                 agents[selected_partner].last_reward = reward2
 
